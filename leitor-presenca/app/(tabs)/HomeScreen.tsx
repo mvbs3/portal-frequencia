@@ -15,8 +15,10 @@ import {
 } from "react-native";
 import { checarPresenca } from "../api";
 import { Audio } from "expo-av";
+import { useLocalSearchParams } from "expo-router";
 
-export default function HomeScreen({ accessToken }: { accessToken: string }) {
+export default function HomeScreen() {
+  const { spreadsheetId } = useLocalSearchParams();
   const [facing, setFacing] = useState<CameraType>("back");
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
@@ -51,10 +53,7 @@ export default function HomeScreen({ accessToken }: { accessToken: string }) {
 
     if (data) {
       const nome = data.replace("nota:", "").trim();
-      const resposta = await checarPresenca(
-        nome,
-        "1naumVgMvRD8iAs5OcQabmNJjSEMK0tEDxA2w3cHM-T0"
-      );
+      const resposta = await checarPresenca(nome, spreadsheetId as string);
       Alert.alert("Resultado", resposta);
     } else {
       Alert.alert("QR inválido", 'O QR Code não começa com "nota:".');
