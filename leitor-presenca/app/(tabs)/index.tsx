@@ -13,11 +13,11 @@ export default function App() {
     <Stack.Navigator>
       {!token ? (
         <Stack.Screen name="Login">
-          {() => <LoginScreen onLoginSuccess={(t) => setToken(t)} />}
+          {() => <LoginScreen />}
         </Stack.Screen>
       ) : (
         <Stack.Screen name="Home">
-          {() => <HomeScreen accessToken={token} />}
+          {() => <HomeScreen  />}
         </Stack.Screen>
       )}
     </Stack.Navigator>

@@ -12,10 +12,12 @@ import {
   TouchableOpacity,
   View,
   Alert,
+  SafeAreaView,
 } from "react-native";
 import { checarPresenca } from "../api";
 import { Audio } from "expo-av";
 import { useLocalSearchParams } from "expo-router";
+import PresencaStatusComponent from "../PresencaStatusComponent";
 
 export default function HomeScreen() {
   const { spreadsheetId } = useLocalSearchParams();
@@ -39,18 +41,18 @@ export default function HomeScreen() {
       </View>
     );
   }
+
   const playBeep = async () => {
     const { sound } = await Audio.Sound.createAsync(
       require("../../assets/sound/beep.mp3")
     );
     await sound.playAsync();
   };
+
   const handleBarCodeScanned = async ({ data }: BarcodeScanningResult) => {
     if (scanned) return;
     setScanned(true);
-
     await playBeep();
-
     if (data) {
       const nome = data.replace("nota:", "").trim();
       const resposta = await checarPresenca(nome, spreadsheetId as string);
@@ -58,7 +60,6 @@ export default function HomeScreen() {
     } else {
       Alert.alert("QR inválido", 'O QR Code não começa com "nota:".');
     }
-
     setTimeout(() => setScanned(false), 3000);
   };
 
@@ -68,12 +69,21 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
+      {/* Adicionando o componente de status de presença no topo */}
+      <SafeAreaView style={styles.statusContainer}>
+        <PresencaStatusComponent />
+      </SafeAreaView>
+
       <CameraView
         style={styles.camera}
         onBarcodeScanned={handleBarCodeScanned}
         barcodeScannerSettings={{ barcodeTypes: ["qr"] }}
         facing={facing}
       >
+        {/* Mira de QR Code */}
+        <View style={styles.overlay}>
+          <View style={styles.qrFrame} />
+        </View>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
             <Text style={styles.text}>Flip Camera</Text>
@@ -111,5 +121,29 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     color: "white",
+  },
+  overlay: {
+    position: "absolute",
+    top: "25%", // ajusta verticalmente pra mais perto do centro
+    left: 0,
+    right: 0,
+    alignItems: "center",
+  },
+  qrFrame: {
+    width: 250,
+    height: 250,
+    borderWidth: 4,
+    borderColor: "white",
+    borderRadius: 16,
+    backgroundColor: "transparent",
+  },
+  // Estilo para o container do componente de status
+  statusContainer: {
+    width: "100%", 
+    paddingHorizontal: 10,
+    paddingTop: 10,
+    position: "absolute",
+    top: 0,
+    zIndex: 10, // Garante que o status fique sobreposto à câmera
   },
 });
