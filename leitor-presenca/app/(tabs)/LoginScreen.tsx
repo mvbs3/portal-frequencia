@@ -1,12 +1,19 @@
 import React, { useState } from "react";
-import { View, TextInput, Button, Text, Alert, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  TextInput,
+  Button,
+  Text,
+  Alert,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import { router } from "expo-router";
-import { checarPresenca, registrarFaltaEmMassa } from "../api";
+import { checarPresenca } from "../api";
+import registrarFaltaEmMassa from "../api";
 import PresencaStatusComponent from "../PresencaStatusComponent";
 
-interface LoginScreenProps {}
-
-const LoginScreen: React.FC<LoginScreenProps> = () => {
+const LoginScreen: React.FC = () => {
   const [spreadsheetLink, setSpreadsheetLink] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -20,7 +27,7 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
     const spreadsheetId = extractSpreadsheetId(spreadsheetLink.trim());
     if (spreadsheetId) {
       router.replace({
-        pathname: "/HomeScreen",
+        pathname: "/(tabs)/HomeScreen",
         params: { spreadsheetId: spreadsheetId },
       });
     } else {
@@ -58,17 +65,18 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
   };
 
   // Verifica se o spreadsheetId é válido
-  const isValidSpreadsheetId = extractSpreadsheetId(spreadsheetLink.trim()) !== null;
+  const isValidSpreadsheetId =
+    extractSpreadsheetId(spreadsheetLink.trim()) !== null;
 
   return (
     <View style={styles.container}>
       {/* Componente de status de presença adicionado aqui */}
       <PresencaStatusComponent />
-      
+
       <Text style={styles.title}>Controle de Presença</Text>
-      
+
       <Text style={styles.label}>Cole o link da sua planilha:</Text>
-      
+
       <View style={styles.inputContainer}>
         <TextInput
           value={spreadsheetLink}
@@ -87,26 +95,30 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
           </TouchableOpacity>
         )}
       </View>
-      
+
       {spreadsheetLink.length > 0 && (
         <View style={styles.previewContainer}>
           <Text style={styles.previewLabel}>Link inserido:</Text>
-          <Text style={styles.previewText} numberOfLines={2} ellipsizeMode="middle">
+          <Text
+            style={styles.previewText}
+            numberOfLines={2}
+            ellipsizeMode="middle"
+          >
             {spreadsheetLink}
           </Text>
         </View>
       )}
-      
-      <Button 
-        title="Continuar" 
+
+      <Button
+        title="Continuar"
         onPress={handleContinue}
         color="#4285F4"
         disabled={!isValidSpreadsheetId || isLoading}
       />
-      
+
       {/* Botão para registrar falta em todos os alunos - só aparece quando há um link válido */}
       {isValidSpreadsheetId && (
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.faltaButton}
           onPress={handleRegistrarFalta}
           disabled={isLoading}
@@ -125,20 +137,20 @@ const styles = StyleSheet.create({
     padding: 20,
     flex: 1,
     justifyContent: "center",
-    backgroundColor: "#fff"
+    backgroundColor: "#fff",
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 30,
     textAlign: "center",
-    color: "#333"
+    color: "#333",
   },
   label: {
     marginBottom: 10,
     fontSize: 16,
     color: "#333",
-    fontWeight: "500"
+    fontWeight: "500",
   },
   inputContainer: {
     flexDirection: "row",
@@ -159,7 +171,7 @@ const styles = StyleSheet.create({
   clearButton: {
     padding: 10,
     color: "#888",
-    fontSize: 16
+    fontSize: 16,
   },
   previewContainer: {
     marginBottom: 20,
@@ -181,13 +193,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#FF5252",
     padding: 12,
     borderRadius: 8,
-    alignItems: "center"
+    alignItems: "center",
   },
   faltaButtonText: {
     color: "white",
     fontWeight: "bold",
-    fontSize: 16
-  }
+    fontSize: 16,
+  },
 });
 
 export default LoginScreen;

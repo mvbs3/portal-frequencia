@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   },
   // Estilo para o container do componente de status
   statusContainer: {
-    width: "100%", 
+    width: "100%",
     paddingHorizontal: 10,
     paddingTop: 10,
     position: "absolute",

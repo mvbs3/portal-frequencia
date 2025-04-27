@@ -18,7 +18,7 @@ export async function checarPresenca(
 }
 
 // Nova função para registrar falta em massa
-export async function registrarFaltaEmMassa(
+export default async function registrarFaltaEmMassa(
   planilhaId: string
 ): Promise<string> {
   const url = `https://script.google.com/macros/s/AKfycbz8bneL4ymagh47f1skesT4JGxmqZ_QfbYhY-zdTnb5XvplphifGabfSkbw_eeGrBud/exec/exec?planilhaId=${encodeURIComponent(
